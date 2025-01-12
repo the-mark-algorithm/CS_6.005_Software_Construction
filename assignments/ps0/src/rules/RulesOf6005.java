@@ -36,7 +36,7 @@ public class RulesOf6005 {
             boolean availableToOthers, boolean writtenAsCourseWork,
             boolean citingYourSource, boolean implementationRequired) {
 
-        return writtenByYourself || ((availableToOthers || citingYourSource) && !writtenAsCourseWork);
+        return writtenByYourself || ((availableToOthers && citingYourSource) && !writtenAsCourseWork);
     }
     
     /**
