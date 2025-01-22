@@ -89,7 +89,63 @@ public class TurtleSoup {
      */
     public static double calculateHeadingToPoint(double currentHeading, int currentX, int currentY,
                                                  int targetX, int targetY) {
-        throw new RuntimeException("implement me!");
+        
+        double adjustmentAngle = 0.0;
+
+        // 1. Center points at origin
+        int centeredX = targetX - currentX;
+        int centeredY = targetY - currentY;
+
+        // 2. Check for same x or y coords!
+        if (centeredX == 0) {
+            if (centeredY > 0) {
+                adjustmentAngle = 90.0;
+            } else if (centeredY < 0) {
+                adjustmentAngle = 270.0;
+            }
+        }
+        
+        if (centeredY == 0) {            
+            if (centeredX > 0) {
+                adjustmentAngle = 0.0;
+            } else if (centeredX < 0) {
+                adjustmentAngle = 180.0;
+            }
+        }
+
+        if (centeredX != 0 && centeredY != 0) {
+            // 3. Check which "quadrant" desination point is at in reference to current
+            int quadrant = 1;
+
+            if (centeredX > 0) {
+                quadrant = centeredY > 0 ? 1 : 4;
+            } else if (centeredX < 0) {
+                quadrant = centeredY > 0? 2 : 3;
+            }
+
+            // 4. If destination point is in quadrant 2 or 3 -> rotate by -180 to move to quadrant 1 or 4
+            if (quadrant == 2 || quadrant == 3) {
+                centeredX = -centeredX;
+                centeredY = -centeredY;
+            }
+
+            // 5. If coordinated differ calculate tan of (shifted) point
+            double tangent = centeredY / centeredX;
+
+            // 6. Calculate arctan of tan to get angle within (-pi/2, pi/2)
+            double arcTan = Math.atan(tangent);
+
+            // 7. Shift angle result by +180 clockwise if original point in Q2 or Q3
+            adjustmentAngle = (quadrant == 2 || quadrant == 3) ? arcTan + 180: arcTan; 
+        }
+
+        // 8. Adjust angle for initial vertical direction and current heading
+        adjustmentAngle = adjustmentAngle - 90 + currentHeading;
+
+        // 9. Let adjustment angle is smaller of two possible directions
+        adjustmentAngle = Math.min(adjustmentAngle, 360 - adjustmentAngle);
+
+        return adjustmentAngle;
     }
 
     /**
@@ -130,13 +186,15 @@ public class TurtleSoup {
      * @param args unused
      */
     public static void main(String args[]) {
-        DrawableTurtle turtle = new DrawableTurtle();
+        // DrawableTurtle turtle = new DrawableTurtle();
 
         // drawSquare(turtle, 40);
-        drawRegularPolygon(turtle, 5, 50);
+        // drawRegularPolygon(turtle, 5, 50);
+        double headtingToPointAngle = calculateHeadingToPoint(30, 0, 1, 0, 0);
+        System.out.println(String.format("Heading to Point Angle %f2", headtingToPointAngle));
 
         // draw the window
-        turtle.draw();
+        // turtle.draw();
     }
 
 }
