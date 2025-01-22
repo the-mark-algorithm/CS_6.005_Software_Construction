@@ -142,8 +142,8 @@ public class TurtleSoup {
         // 8. Adjust angle for initial vertical direction and current heading
         adjustmentAngle = adjustmentAngle - 90 + currentHeading;
 
-        // 9. Let adjustment angle is smaller of two possible directions
-        adjustmentAngle = Math.min(adjustmentAngle, 360 - adjustmentAngle);
+        // 9. Get clockwise adjustment angle, make it positive
+        adjustmentAngle = (adjustmentAngle <= 0) ? -1 * adjustmentAngle: 360 - adjustmentAngle;
 
         return adjustmentAngle;
     }
