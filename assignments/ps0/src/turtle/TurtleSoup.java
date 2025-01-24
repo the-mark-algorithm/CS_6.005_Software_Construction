@@ -133,17 +133,22 @@ public class TurtleSoup {
             double tangent = centeredY / centeredX;
 
             // 6. Calculate arctan of tan to get angle within (-pi/2, pi/2)
-            double arcTan = Math.atan(tangent);
+            double arcTan = Math.atan(tangent) * (360 / (2 * Math.PI));
 
-            // 7. Shift angle result by +180 clockwise if original point in Q2 or Q3
-            adjustmentAngle = (quadrant == 2 || quadrant == 3) ? arcTan + 180: arcTan; 
+            // 7. Shift angle result by +180 clockwise if original point in Q2 or Q3, 
+            // Shift by 360 if in Q4 -> means arcTan is < 0 (clockwise direction angle) want counter-clockwise direction angle
+            adjustmentAngle = (quadrant == 2 || quadrant == 3) 
+                ? arcTan + 180 
+                : (quadrant == 4) 
+                    ? arcTan + 360 
+                    : arcTan; 
         }
 
-        // 8. Adjust angle for initial vertical direction and current heading
-        adjustmentAngle = adjustmentAngle - 90 + currentHeading;
+        // 8. Get clockwise adjustment angle
+        adjustmentAngle = (360 - adjustmentAngle) % 360;
 
-        // 9. Get clockwise adjustment angle, make it positive
-        adjustmentAngle = (adjustmentAngle <= 0) ? -1 * adjustmentAngle: 360 - adjustmentAngle;
+        // 9. Adjust angle for initial vertical direction and current heading
+        adjustmentAngle = (adjustmentAngle + 90 - currentHeading) % 360;
 
         return adjustmentAngle;
     }
@@ -163,7 +168,26 @@ public class TurtleSoup {
      *         otherwise of size (# of points) - 1
      */
     public static List<Double> calculateHeadings(List<Integer> xCoords, List<Integer> yCoords) {
-        throw new RuntimeException("implement me!");
+
+        ArrayList<Double> headingAdjustments = new ArrayList<>();
+        double currentHeading = 0.0;
+
+        for (int i = 0; i < xCoords.size() - 1; i++) {
+
+            int currentX = xCoords.get(i);
+            int currentY = yCoords.get(i);
+
+            int nextX = xCoords.get(i + 1);
+            int nextY = yCoords.get(i + 1);
+
+            double turnAngle = calculateHeadingToPoint(currentHeading, currentX, currentY, nextX, nextY);
+
+            headingAdjustments.add(turnAngle);
+
+            currentHeading = (currentHeading + turnAngle) % 360;
+        }
+
+        return headingAdjustments;
     }
 
     /**
