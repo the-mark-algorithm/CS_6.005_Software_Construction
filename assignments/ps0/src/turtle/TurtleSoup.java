@@ -130,7 +130,7 @@ public class TurtleSoup {
             }
 
             // 5. If coordinated differ calculate tan of (shifted) point
-            double tangent = centeredY / centeredX;
+            double tangent = (double)centeredY / centeredX;
 
             // 6. Calculate arctan of tan to get angle within (-pi/2, pi/2)
             double arcTan = Math.atan(tangent) * (360 / (2 * Math.PI));
@@ -144,11 +144,12 @@ public class TurtleSoup {
                     : arcTan; 
         }
 
-        // 8. Get clockwise adjustment angle
-        adjustmentAngle = (360 - adjustmentAngle) % 360;
+        // 8. Adjust angle for initial vertical direction and current heading
+        adjustmentAngle = (adjustmentAngle - 90 + currentHeading) % 360;
 
-        // 9. Adjust angle for initial vertical direction and current heading
-        adjustmentAngle = (adjustmentAngle + 90 - currentHeading) % 360;
+
+        // 9. Get clockwise adjustment angle
+        adjustmentAngle = (360 - adjustmentAngle) % 360;
 
         return adjustmentAngle;
     }
@@ -184,6 +185,8 @@ public class TurtleSoup {
 
             headingAdjustments.add(turnAngle);
 
+            // System.out.println(String.format("Current Point: (%d, %d) -> Next Point: (%d, %d), Current Heading: %f, Turn Angle: %f", currentX, currentY, nextX, nextY, currentHeading, headingAdjustments.get(i)));
+
             currentHeading = (currentHeading + turnAngle) % 360;
         }
 
@@ -199,7 +202,91 @@ public class TurtleSoup {
      * @param turtle the turtle context
      */
     public static void drawPersonalArt(Turtle turtle) {
-        throw new RuntimeException("implement me!");
+        ArrayList<Integer> xCoords = new ArrayList<>();
+        ArrayList<Integer> yCoords = new ArrayList<>();
+        ArrayList<Integer> unitsForward = new ArrayList<>();
+
+
+        xCoords.add(0);
+        xCoords.add(-6);
+        xCoords.add(-6);
+        xCoords.add(-4);
+        xCoords.add(-2);
+        xCoords.add(-2);
+        xCoords.add(-0);
+        xCoords.add(1);
+        xCoords.add(-1);
+        xCoords.add(1);
+        xCoords.add(2);
+        xCoords.add(2);
+        xCoords.add(4);
+        xCoords.add(2);
+        xCoords.add(4);
+        xCoords.add(4);
+        xCoords.add(4);
+        xCoords.add(6);
+        xCoords.add(4);
+        xCoords.add(6);
+
+        yCoords.add(0);
+        yCoords.add(0);
+        yCoords.add(4);
+        yCoords.add(2);
+        yCoords.add(4);
+        yCoords.add(0);
+        yCoords.add(4);
+        yCoords.add(2);
+        yCoords.add(2);
+        yCoords.add(2);
+        yCoords.add(0);
+        yCoords.add(4);
+        yCoords.add(3);
+        yCoords.add(2);
+        yCoords.add(0);
+        yCoords.add(4);
+        yCoords.add(2);
+        yCoords.add(4);
+        yCoords.add(2);
+        yCoords.add(0);
+
+        unitsForward.add(150);
+        unitsForward.add(100);
+        unitsForward.add(((int)Math.round(50 * Math.sqrt(2))));
+        unitsForward.add(((int)Math.round(50 * Math.sqrt(2))));
+        unitsForward.add(100);
+        unitsForward.add(((int)Math.round(50 * Math.sqrt(5))));
+        unitsForward.add(((int)Math.round(25 * Math.sqrt(5))));
+        unitsForward.add(50);
+        unitsForward.add(50);
+        unitsForward.add((int)Math.round(25 * Math.sqrt(5)));
+        unitsForward.add(100);
+        unitsForward.add((int)Math.round(25 * Math.sqrt(5)));
+        unitsForward.add((int)Math.round(25 * Math.sqrt(5)));
+        unitsForward.add((int)Math.round(50 * Math.sqrt(2)));
+        unitsForward.add(100);
+        unitsForward.add(50);
+        unitsForward.add((int)Math.round(50 * Math.sqrt(2)));
+        unitsForward.add((int)Math.round(50 * Math.sqrt(2)));
+        unitsForward.add((int)Math.round(50 * Math.sqrt(2)));
+
+        unitsForward.add(0);
+
+
+        List<Double> headingAngles = calculateHeadings(xCoords, yCoords);
+
+        for (int i = 0; i < headingAngles.size(); i++) {
+            int currentX = xCoords.get(i);
+            int currentY = yCoords.get(i);
+
+            int nextX = xCoords.get(i+1);
+            int nextY = yCoords.get(i+1);
+
+            // System.out.println(String.format("Current Point: (%d, %d) -> Next Point: (%d, %d), Turn Angle: %f", currentX, currentY, nextX, nextY, headingAngles.get(i)));
+
+            turtle.turn(headingAngles.get(i));
+            turtle.forward(unitsForward.get(i));
+        }
+        
     }
 
     /**
@@ -210,15 +297,17 @@ public class TurtleSoup {
      * @param args unused
      */
     public static void main(String args[]) {
-        // DrawableTurtle turtle = new DrawableTurtle();
+        DrawableTurtle turtle = new DrawableTurtle();
+
+        drawPersonalArt(turtle);
 
         // drawSquare(turtle, 40);
         // drawRegularPolygon(turtle, 5, 50);
-        double headtingToPointAngle = calculateHeadingToPoint(30, 0, 1, 0, 0);
-        System.out.println(String.format("Heading to Point Angle %f2", headtingToPointAngle));
+        // double headtingToPointAngle = calculateHeadingToPoint(30, 0, 1, 0, 0);
+        // System.out.println(String.format("Heading to Point Angle %f2", headtingToPointAngle));
 
         // draw the window
-        // turtle.draw();
+        turtle.draw();
     }
 
 }
